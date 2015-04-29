@@ -20,10 +20,18 @@ def sending_req(step):
 def iot_resp(step):
     assert True
 
-@step(u'the IoT body response should include id "([^"]*)" and type "([^"]*)"')
+@step(u'And the response sent to Context Broker should include id "([^"]*)" and type "([^"]*)"')
 def body_shape1(step, iot_id, iot_type):
     assert world.flow_id == iot_id
     print(world.flow_id)
+    print(iot_id)
+    print step.hashes[0]
+
+@step(u'And the response sent to Context Broker should include name "([^"]*)" and value "([^"]*)"')
+def body_shape2(step, iot_name, iot_val):
+    name, val = world.flow_data.replace('|', ' ').split()
+    assert name == iot_name
+    print step.hashes[0]
     print(iot_id)
     print step.hashes[0]
 

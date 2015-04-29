@@ -32,14 +32,8 @@ def body_shape2(step, iot_name, iot_val):
     name, val = world.flow_data.replace('|', ' ').split()
     assert name == iot_name
     print step.hashes[0]
-    print(iot_id)
-    print step.hashes[0]
 
-@step(u'the IoT body response for the attributes should include name "(\w+)" and value "(\w+)"')
-def body_shape2(step, iot_name, iot_val):
-    name, val = world.flow_data.replace('|', ' ').split()
-    assert name == iot_name
-    print step.hashes[0]
+
 
 
 

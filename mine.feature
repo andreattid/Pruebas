@@ -19,7 +19,7 @@ Feature: Receive measures from sensor
 
   Examples:
     | ID       | DATA  | SERVICE  |
-    | DEVICE_1 | t_15  | service1 |
+    | DEVICE_1 | t_15  | service2 |
     | DEVICE_2 | h_771 | service1 |
 
  # Using | to separate data is not possible --> _ instead

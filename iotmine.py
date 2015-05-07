@@ -67,8 +67,9 @@ def create_device_id(step, group1):
     devices = resp["devices"]
 
     for device in devices:
-        eq_(device["device_id"], world.id)
-        return
+        if device["device_id"] == world.id:
+            eq_(device["device_id"], world.id)
+
 
 
 @step(u'And data "([^"]*)"')

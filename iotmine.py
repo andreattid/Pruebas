@@ -38,7 +38,7 @@ def given_service(step, service_apikey):
     world.apikey = service_apikey
 
 @step(u'the service "([^"]*)" has been created')
-def create_service(step, group1):
+def create_service(step):
 
     url = 'http://192.168.22.137:8085/iot/services'
     headers = {'Fiware-Service': 'service2', 'Fiware-Subservice': '/srvpath2'}
@@ -79,7 +79,9 @@ def given_data(step, data):
 
 @step(u'a measure is received')
 def receive_measure(step):
-    # IDEA?
+    url = 'http://192.168.22.137:8085/iot/d?i='+world.id+'&d='+world.data+'&k='+world.apikey
+    headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Fiware-Service': 'service2'}
+    req = requests.get(url=url, headers=headers, data=None)
     assert True
 
 

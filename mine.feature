@@ -5,12 +5,10 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
 
   @1
   Scenario Outline: Device sends a new measure
-    Given api_key for service "<SERVICE>"
-    And the service "<SERVICE>" has been created
-    And a device with device_id "<ID>"
-    And the device with device_id "<ID>" has been created
-    And data "<DATA>"
-    When a measure is received
+    Given api_key for service "<SERVICE>" and device_id "<ID>"  and data "<DATA>"
+    And the service has been created
+    And the device has been created
+    When a measure is sent to IoT Agent with a certain IP
     Then the IoT GET response should be 200
     And context broker is notified
     And the response sent to Context Broker should include name "<IOT_RESP_NAME>" and value "<IOT_RESP_VAL>"

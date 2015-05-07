@@ -5,37 +5,33 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
 
   @1
   Scenario Outline: Device sends a new measure
-    Given api_key for service "<SERVICE>" and device_id "<ID>"  and data "<DATA>"
+    Given api_key for service "<SERVICE>" and device_id "<ID>" and data "<DATA>"
     And the service has been created
-    And the device has been created
-    When a measure is sent to IoT Agent with a certain IP
+    When a measure is sent to IoT Agent using GET
     Then the IoT GET response should be 200
     And context broker is notified
-    And the response sent to Context Broker should include name "<IOT_RESP_NAME>" and value "<IOT_RESP_VAL>"
+    And the response sent to Context Broker should include
       | name | value |
       | t    | 15    |
       | h    | 771   |
 
   Examples:
     | ID         | SERVICE  | DATA     |
-    | device_id1 | apikey3  | t_17     |
+    | dev1       | abcabc   | r_6      |
 
 
   @2
   Scenario Outline: Device sends several measures
-    Given api_key for service "<SERVICE>"
-    And the service "<SERVICE>" has been created
-    And a device with device_id "<ID>"
-    And the device with device_id "<ID>" has been created
-    And several measures in data "<DATA>"
-    When a measure is received
+    Given api_key for service "<SERVICE>" and device_id "<ID>" and data "<DATA>"
+    And the service has been created
+    When a measure is sent to IoT Agent using POST
     Then the IoT POST response should be 200
     And context broker is notified
-    And the response sent to Context Broker should include name "<IOT_RESP_NAME>" and value "<IOT_RESP_VAL>"
+    And the response sent to Context Broker should include
 
   Examples:
     | ID         | DATA                           | SERVICE |
-    | device_id1 | temperature_17#humidity_711    | apikey3 |
+    | device_id1 | temperature_17#humidity_711    | abcabc  |
 
 
   # Scenario Outline: Device receives command from CB
@@ -48,11 +44,3 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
   Examples:
     | ID       | DATA  | SERVICE  |
     | DEVICE_1 | t_15  | service1 |
-
-
-
-	
-	
-	
-	
- 

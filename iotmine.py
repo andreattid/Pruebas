@@ -16,6 +16,7 @@ import json
 
 *******************************************************"""
 
+
 @step(u'Given a test')
 def given_test(step):
     url = 'http://192.168.22.137:8085/iot/d?i=dispo&d=t|8&k=abcabc'
@@ -33,6 +34,7 @@ def given_test(step):
 
 *******************************************************"""
 
+
 @step(u'api_key for service "([^"]*)" and device_id "([^"]*)" and data "([^"]*)"')
 def given_service(step, service_apikey, device_id, data):
     world.apikey = service_apikey
@@ -42,9 +44,28 @@ def given_service(step, service_apikey, device_id, data):
     else:
         world.data = data.replace('_', '|')
 
+
+@step(u'api_key for service "([^"]*)" and device_id "([^"]*)" and data')
+def given_service(step, service_apikey, device_id):
+    world.apikey = service_apikey
+    world.id = device_id
+    data = step.hashes[0]["data"]
+    value = step.hashes[0]["value"]
+
+    print "{}_{}".format(data, value)
+
+    world.datas = []
+    world.values = []
+
+    # inicio del while
+    world.datas.append(data)
+    world.values.append(value)
+
+    world.data = data  # TO REMOVE: just to avoid the error in execution
+
+
 @step(u'the service has been created')
 def create_service(step):
-
     url = 'http://192.168.22.137:8085/iot/services'
     headers = {'Fiware-Service': 'A001', 'Fiware-Subservice': '/TestA001'}
     req = requests.get(url=url, headers=headers, data=None)
@@ -59,24 +80,23 @@ def create_service(step):
 
 @step(u'a measure is sent to IoT Agent using GET')
 def send_measure1(step):
-
-    url = 'http://192.168.22.137:8085/iot/d?i='+world.id+'&d='+world.data+'&k='+world.apikey
+    url = 'http://192.168.22.137:8085/iot/d?i=' + world.id + '&d=' + world.data + '&k=' + world.apikey
     headers = {'Fiware-Service': 'A001', 'Fiware-Subservice': '/TestA001', 'Content-Type': 'application/json'}
     world.getresp = requests.get(url=url, headers=headers, data=None)
 
 
 @step(u'a measure is sent to IoT Agent using POST')
 def send_measure2(step):
-    url = 'http://192.168.22.137:8085/iot/d?i='+world.id+'&k='+world.apikey
+    url = 'http://192.168.22.137:8085/iot/d?i=' + world.id + '&k=' + world.apikey
     headers = {'Fiware-Service': 'A001', 'Fiware-Subservice': '/TestA001', 'Content-Type': 'application/json'}
     data = world.data
     world.postresp = requests.post(url=url, headers=headers, data=data)
 
 
-
 @step(u'Then the IoT GET response should be 200')
 def iot_get_response(step):
     eq_(world.getresp.status_code, 200)
+
 
 @step(u'Then the IoT POST response should be 200')
 def iot_post_response(step):
@@ -85,8 +105,9 @@ def iot_post_response(step):
 
 @step(u'context broker is notified')
 def cb_notification(step):
-    url = 'http://10.95.82.244:1026/v1/contextEntities/type/thing/id/'+world.id
-    headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Fiware-Service': 'A001', 'Fiware-Subservice': '/TestA001'}
+    url = 'http://10.95.82.244:1026/v1/contextEntities/type/thing/id/' + world.id
+    headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Fiware-Service': 'A001',
+               'Fiware-Subservice': '/TestA001'}
     req = requests.get(url=url, headers=headers, data=None)
     status = req.status_code
     eq_(status, 200)
@@ -105,9 +126,6 @@ def cb_response(step):
         if attribute["name"] == name1:
             eq_(attribute["name"], name1)
             eq_(attribute["value"], value1)
-
-
-
 
 
 """

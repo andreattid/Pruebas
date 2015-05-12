@@ -16,13 +16,16 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
       | h    | 771   |
 
   Examples:
-    | ID         | SERVICE  | DATA     |
-    | dev1       | abcabc   | r_6      |
+    | ID   | SERVICE | DATA |
+    | dev1 | abcabc  | r_6  |
 
 
   @2
   Scenario Outline: Device sends several measures
-    Given api_key for service "<SERVICE>" and device_id "<ID>" and data "<DATA>"
+    Given api_key for service "<SERVICE>" and device_id "<ID>" and data
+      | data        | value |
+      | temperature | 17    |
+      | humidity    | 711   |
     And the service has been created
     When a measure is sent to IoT Agent using POST
     Then the IoT POST response should be 200
@@ -30,8 +33,8 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
     And the response sent to Context Broker should include
 
   Examples:
-    | ID         | DATA                           | SERVICE |
-    | device_id1 | temperature_17#humidity_711    | abcabc  |
+    | ID         | SERVICE |
+    | device_id1 | abcabc  |
 
 
   # Scenario Outline: Device receives command from CB
@@ -42,5 +45,5 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
     Given a test
 
   Examples:
-    | ID       | DATA  | SERVICE  |
-    | DEVICE_1 | t_15  | service1 |
+    | ID       | DATA | SERVICE  |
+    | DEVICE_1 | t_15 | service1 |

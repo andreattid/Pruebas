@@ -22,7 +22,7 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
 
   @2
   Scenario Outline: Device sends several measures
-    Given api_key for service "<SERVICE>" and device_id "<ID>" and data
+    Given api_key for service "<SERVICE>" and device_id "<ID>" and data values
       | data        | value |
       | temperature | 17    |
       | humidity    | 711   |

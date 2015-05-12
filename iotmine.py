@@ -45,7 +45,7 @@ def given_service(step, service_apikey, device_id, data):
         world.data = data.replace('_', '|')
 
 
-@step(u'api_key for service "([^"]*)" and device_id "([^"]*)" and data')
+@step(u'api_key for service "([^"]*)" and device_id "([^"]*)" and data values')
 def given_service(step, service_apikey, device_id):
     world.apikey = service_apikey
     world.id = device_id

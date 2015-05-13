@@ -46,11 +46,24 @@ def given_service(step, service_apikey, device_id):
     world.values = []
     world.size = len(step.hashes)
 
+<<<<<<< HEAD
     for item in step.hashes:
         # IF clause to make sure measures arrive propper
+=======
+    """
+    while i < world.size:
+        world.datas.append(step.hashes[i]["name"])
+        world.values.append(step.hashes[i]["value"])
+        i = i+1
+    """
+    # alternative
+    for item in step.hashes:
+>>>>>>> 393037da1e9fd794272cff81b999b91c7f9f721c
         world.datas.append(item["name"])
         world.values.append(item["value"])
 
+    print world.datas
+    print world.values
 
 
 @step(u'the service has been created')

@@ -4,7 +4,7 @@ import urllib
 import urllib2
 import requests
 import json
-
+import yaml
 
 """******************************************************
 
@@ -19,9 +19,8 @@ import json
 
 @step(u'Given a test')
 def given_test(step):
-    url = 'http://192.168.22.137:8085/iot/d?i=dispo&d=t|8&k=abcabc'
-    headers = {'Fiware-Service': 'A001', 'Fiware-Subservice': '/TestA001', 'Content-Type': 'application/json'}
-    world.getresp = requests.get(url=url, headers=headers, data=None)
+    data = 'holaminombre'
+
 
 
 
@@ -42,18 +41,15 @@ def given_test(step):
 def given_service(step, service_apikey, device_id):
     world.apikey = service_apikey
     world.id = device_id
-    data = step.hashes[0]["name"]
-    value = step.hashes[0]["value"]
 
-    i = 0
     world.datas = []
     world.values = []
     world.size = len(step.hashes)
 
-    while i < world.size:
-        world.datas.append(step.hashes[i]["name"])
-        world.values.append(step.hashes[i]["value"])
-        i = i+1
+    for item in step.hashes:
+        # IF clause to make sure measures arrive propper
+        world.datas.append(item["name"])
+        world.values.append(item["value"])
 
 
 
@@ -73,10 +69,13 @@ def create_service(step):
 
 @step(u'a measure is sent to IoT Agent using GET')
 def send_measure1(step):
-    data = world.datas[0]+'|'+world.values[0]
-    url = 'http://192.168.22.137:8085/iot/d?i=' + world.id + '&d=' + data + '&k=' + world.apikey
-    headers = {'Fiware-Service': 'A001', 'Fiware-Subservice': '/TestA001', 'Content-Type': 'application/json'}
-    world.getresp = requests.get(url=url, headers=headers, data=None)
+
+    for i in range(0, world.size):
+        data = world.datas[i]+'|'+world.values[i]
+        url = 'http://192.168.22.137:8085/iot/d?i=' + world.id + '&d=' + data + '&k=' + world.apikey
+        headers = {'Fiware-Service': 'A001', 'Fiware-Subservice': '/TestA001', 'Content-Type': 'application/json'}
+        world.getresp = requests.get(url=url, headers=headers, data=None)
+
 
 
 @step(u'a measure is sent to IoT Agent using POST')
@@ -113,9 +112,9 @@ def cb_notification(step):
     status = req.status_code
     eq_(status, 200)
 
-    text = req.text
-    world.resp = json.loads(str(text))
-
+    text = req.content
+    world.resp = yaml.safe_load(text)
+    print world.resp
 
 @step(u'the response sent to Context Broker should match with the data sent')
 def cb_response(step):

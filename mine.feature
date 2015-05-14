@@ -27,6 +27,16 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
         |  555            |  $$15            |
         |  666            |  %value          |
         |  %value         |  666             |
+        |  \u04d1         |  abc             |
+        |  hola!          |  732             |
+        | [hola]          | 816              |
+        | time            | 15:45            |
+        | similar         | 2~3              |
+        | {example}       | xxyy             |
+        | question?       | aah321           |
+        | Æ               | Example          |
+        |cçç              | 8102             |
+
     And the service has been created
     When a measure is sent to IoT Agent using GET
     Then the IoT GET response should be 200
@@ -41,26 +51,20 @@ Feature: Testing UL2.0 features within ORION CONTEXT BROKER
  @2
   Scenario Outline: Device sends a new measure, failure cases
     Given api_key for service "<SERVICE>" and device_id "<ID>" and data values
-        # No pasa estos atributos como tal, y no crea el dispositivo
-        | name            | value            |
-        |  &esc           |  abc             |
-        |  (ds)           |  nnn             |
-        |  "esto"         |  000             |
-        |  abc            |  &esc            |
-        |  nnn            |  (ds)            |
-        |  000            |  "esto"          |
-
-
+        | name                 | value            |
+        | aaa                  | Example          |
+        | bbb                  | Example2         |
+        | u\u                  | xvy              |
     And the service has been created
     When a measure is sent to IoT Agent using GET
     Then the IoT GET response should be 200
     And context broker is notified
-    And the response sent to Context Broker should match with the data sent
+    And the response sent to Context Broker should be invalid
 
 
   Examples:
     | ID                     | SERVICE  |
-    | dev_fail               | abcabc   |
+    | dev10               | abcabc   |
 
 
 

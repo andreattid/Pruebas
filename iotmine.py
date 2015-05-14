@@ -5,6 +5,7 @@ import urllib2
 import requests
 import json
 import yaml
+import string
 
 """******************************************************
 
@@ -19,9 +20,29 @@ import yaml
 
 @step(u'Given a test')
 def given_test(step):
-    data = 'holaminombre'
+    data = 'kdjaJdkasjd'
+
+    for item in data:
+
+        print item
 
 
+
+def security(string):
+    bool = 1
+    for item in string:
+        # Forbidden characters in ASCII (as they belong to the url
+        if ord(item) < 32:
+            bool = 0
+        elif ord(item) == 38:
+            bool = 0
+        elif ord(item) == 124:
+            bool = 0
+
+        # Invalid characters in JSON. How can I improve this??
+        elif ord(item) == 92:
+            bool = 0
+    return bool
 
 
 
@@ -44,12 +65,23 @@ def given_service(step, service_apikey, device_id):
 
     world.datas = []
     world.values = []
-    world.size = len(step.hashes)
+    world.size = len(step.hashes) - 1
+
 
     for item in step.hashes:
-        # IF clause to make sure measures arrive propper
-        world.datas.append(item["name"])
-        world.values.append(item["value"])
+        # Security function to sketch a dataset and remove the items where a forbidden symbol appears
+        # If wrong char appears in name, it will not be appended, and neither the value
+        if security(item["name"]):
+            world.datas.append(item["name"])
+            if security(item["value"]):
+                    world.values.append(item["value"])
+            else:
+                print "The value "+item["value"]+" cannot be appended"
+        else:
+            print "The name "+item["name"]+" cannot be appended"
+
+
+
 
 
 
@@ -63,7 +95,7 @@ def create_service(step):
     services = resp["services"]
 
     for service in services:
-        eq_(service["apikey"], world.apikey, 'El servicio solicitado no existe')
+        eq_(service["apikey"], world.apikey, 'No service matching a current service')
         return
 
 
@@ -109,11 +141,11 @@ def cb_notification(step):
     headers = {'Content-Type': 'application/json', 'Accept': 'application/json', 'Fiware-Service': 'A001',
                'Fiware-Subservice': '/TestA001'}
     req = requests.get(url=url, headers=headers, data=None)
+    world.req = req
     status = req.status_code
     eq_(status, 200)
 
-    text = req.content
-    world.resp = yaml.safe_load(text)
+    world.resp = yaml.safe_load(req.content)
     print world.resp
 
 @step(u'the response sent to Context Broker should match with the data sent')
@@ -125,10 +157,21 @@ def cb_response(step):
         if attribute["name"] == world.datas[0]:
             eq_(attribute["name"], world.datas[0])
             eq_(attribute["value"], world.values[0])
-    """
 
 
+@step(u'And the response sent to Context Broker should be invalid')
+def invalid_resp(step):
+    with open('filename.txt','w') as fout:
+        fout.write(world.req.text)
+
+
+
+
+"""
 @step(u'the device has been created')
+I decided to remove this step since I haven't figured out yet how to match a device created by
+default with a device manually provided
+
 def create_device_id(step):
     url = 'http://192.168.22.137:8085/iot/devices'
     headers = {'Fiware-Service': 'service2', 'Fiware-Subservice': '/srvpath2'}
